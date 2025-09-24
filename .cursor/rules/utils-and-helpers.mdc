@@ -1,0 +1,94 @@
+---
+globs: utils/*.js
+description: 工具函数和帮助方法使用指南
+---
+
+# 工具函数使用指南
+
+## 核心工具模块
+
+### 网络请求 - [utils/request.js](mdc:utils/request.js)
+统一的HTTP请求封装，包含拦截器和错误处理。
+
+使用示例：
+```javascript
+import request from '@/utils/request'
+
+// GET请求
+request({
+  url: '/user/profile',
+  method: 'get'
+})
+
+// POST请求
+request({
+  url: '/user/update',
+  method: 'post',
+  data: { name: 'xxx' }
+})
+```
+
+### 认证管理 - [utils/auth.js](mdc:utils/auth.js)
+Token存储和管理，用户认证状态处理。
+
+主要方法：
+- `getToken()` - 获取token
+- `setToken(token)` - 设置token
+- `removeToken()` - 删除token
+
+### 本地存储 - [utils/storage.js](mdc:utils/storage.js)
+跨平台的本地存储封装。
+
+主要方法：
+- `getStorage(key)` - 获取存储值
+- `setStorage(key, value)` - 设置存储值
+- `removeStorage(key)` - 删除存储值
+
+### 数据字典 - [utils/dict.js](mdc:utils/dict.js)
+系统字典数据处理和缓存。
+
+### 表单验证 - [utils/validate.js](mdc:utils/validate.js)
+常用的表单验证规则。
+
+常用验证方法：
+- `isEmail(email)` - 邮箱验证
+- `isMobile(mobile)` - 手机号验证
+- `isPassword(password)` - 密码强度验证
+
+### 通用工具 - [utils/common.js](mdc:utils/common.js)
+通用的工具函数和帮助方法。
+
+### 权限控制 - [utils/permission.js](mdc:utils/permission.js)
+页面权限和按钮权限控制。
+
+### 文件上传 - [utils/upload.js](mdc:utils/upload.js)
+文件上传相关的工具方法。
+
+### 错误码管理 - [utils/errorCode.js](mdc:utils/errorCode.js)
+系统错误码定义和错误信息处理。
+
+### 常量定义 - [utils/constant.js](mdc:utils/constant.js)
+系统常量和配置参数。
+
+## 使用规范
+
+1. **导入方式**
+   ```javascript
+   // 推荐使用具名导入
+   import { getToken, setToken } from '@/utils/auth'
+   
+   // 默认导入
+   import request from '@/utils/request'
+   ```
+
+2. **错误处理**
+   - 工具函数应该包含适当的错误处理
+   - 使用try-catch包装可能出错的操作
+
+3. **平台兼容性**
+   - 所有工具函数都应该支持H5、小程序、APP多平台
+   - 使用条件编译处理平台差异
+
+4. **性能考虑**
+   - 避免在工具函数中进行重复的计算
+   - 合理使用缓存机制

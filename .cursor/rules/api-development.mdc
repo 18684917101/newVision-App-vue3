@@ -1,0 +1,74 @@
+---
+globs: api/*.js,utils/request.js
+description: API开发和网络请求规范
+---
+
+# API开发规范
+
+## 网络请求规范
+
+### 统一请求封装
+
+所有API请求必须通过 [utils/request.js](mdc:utils/request.js) 进行，不要直接使用 `uni.request()`。
+
+### API文件组织
+
+- `api/` 目录按功能模块组织
+- [api/login.js](mdc:api/login.js) - 登录认证相关
+- `api/system/` - 系统管理相关API
+
+### API方法定义规范
+
+```javascript
+import request from '@/utils/request'
+
+// 登录方法
+export function login(username, password, code, uuid) {
+  const data = {
+    username,
+    password,
+    code,
+    uuid
+  }
+  return request({
+    url: '/login',
+    headers: {
+      isToken: false
+    },
+    method: 'post',
+    data: data
+  })
+}
+
+// 获取用户详细信息
+export function getInfo() {
+  return request({
+    url: '/getInfo',
+    method: 'get'
+  })
+}
+```
+
+### 请求配置
+
+- 基础URL配置在 [config.js](mdc:config.js)
+- 默认使用 `http://localhost:8080` 作为开发环境
+- 生产环境需要修改为实际的服务器地址
+
+### 错误处理
+
+- 统一在 [utils/request.js](mdc:utils/request.js) 中处理HTTP错误
+- 业务错误在组件中处理
+- 使用 [utils/errorCode.js](mdc:utils/errorCode.js) 定义错误码
+
+### 认证处理
+
+- Token存储使用 [utils/auth.js](mdc:utils/auth.js)
+- 自动在请求头中添加认证信息
+- 401错误自动跳转到登录页面
+
+### 请求拦截器配置
+
+参考 [utils/request.js](mdc:utils/request.js) 中的拦截器实现：
+- 请求拦截：添加token、设置请求头
+- 响应拦截：统一处理错误码、token过期等

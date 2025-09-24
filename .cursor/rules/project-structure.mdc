@@ -1,0 +1,44 @@
+---
+alwaysApply: true
+description: RuoYi-App-vue3项目结构指南
+---
+
+# RuoYi-App-vue3 项目结构指南
+
+这是一个基于UniApp Vue3的移动端框架项目，支持多平台开发（H5、小程序、APP等）。
+
+## 核心文件
+
+- [main.js](mdc:main.js) - 应用程序入口点
+- [App.vue](mdc:App.vue) - 根组件
+- [manifest.json](mdc:manifest.json) - UniApp应用配置
+- [pages.json](mdc:pages.json) - 页面路由配置
+- [config.js](mdc:config.js) - 全局配置文件
+- [uni.scss](mdc:uni.scss) - 全局样式变量
+
+## 目录结构
+
+- `api/` - API接口定义
+  - [login.js](mdc:api/login.js) - 登录相关接口
+  - `system/` - 系统管理接口
+- `pages/` - 页面文件
+  - [index.vue](mdc:pages/index.vue) - 首页
+  - [login.vue](mdc:pages/login.vue) - 登录页
+  - `mine/` - 个人中心相关页面
+  - `work/` - 工作台相关页面
+- `store/` - Vuex状态管理
+  - [index.js](mdc:store/index.js) - Store入口
+  - `modules/` - 分模块状态管理
+- `utils/` - 工具函数
+  - [request.js](mdc:utils/request.js) - 网络请求封装
+  - [auth.js](mdc:utils/auth.js) - 认证相关工具
+- `plugins/` - 插件配置
+- `static/` - 静态资源
+- `uni_modules/` - UniApp模块
+
+## 开发规范
+
+- 使用Vue3 Composition API
+- 支持TypeScript（可选）
+- 遵循UniApp开发规范
+- 使用uni-ui组件库

@@ -1,0 +1,76 @@
+---
+description: UniApp多平台兼容性开发指南
+---
+
+# UniApp多平台兼容性指南
+
+## 支持的平台
+
+根据 [manifest.json](mdc:manifest.json) 配置，项目支持：
+- H5 (Web端)
+- 微信小程序
+- APP (Android/iOS)
+- 其他小程序平台
+
+## 平台差异处理
+
+### 条件编译
+
+使用条件编译处理平台差异：
+
+```javascript
+// #ifdef H5
+// H5端特有代码
+// #endif
+
+// #ifdef MP-WEIXIN
+// 微信小程序特有代码
+// #endif
+
+// #ifdef APP-PLUS
+// APP端特有代码
+// #endif
+```
+
+### 样式适配
+
+- 使用rpx单位进行屏幕适配
+- H5端开发服务器端口：9090 (配置在 [manifest.json](mdc:manifest.json))
+- 参考 [static/scss/](mdc:static/scss/) 目录的样式文件
+
+### API兼容性
+
+1. **网络请求**
+   - 统一使用 [utils/request.js](mdc:utils/request.js)
+   - 基础URL在 [config.js](mdc:config.js) 中配置
+
+2. **本地存储**
+   - 使用 [utils/storage.js](mdc:utils/storage.js) 封装的方法
+   - 支持所有平台的本地存储
+
+3. **路由导航**
+   - 页面配置在 [pages.json](mdc:pages.json)
+   - 使用uni.navigateTo等API进行页面跳转
+
+### 权限处理
+
+Android权限配置在 [manifest.json](mdc:manifest.json) 中：
+- 网络访问权限
+- 相机权限
+- 存储权限
+- 其他必要权限
+
+### 开发建议
+
+1. **优先H5端开发调试**
+   - 使用 `npm run dev:h5` 快速开发
+   - 端口：http://localhost:9090
+
+2. **真机测试**
+   - 重要功能需要在真机上测试
+   - 特别注意APP端和小程序端的差异
+
+3. **性能优化**
+   - 图片资源放在 `static/images/` 目录
+   - 使用uni-ui组件提高性能
+   - 避免使用平台特有的DOM操作

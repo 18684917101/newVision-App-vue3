@@ -1,0 +1,94 @@
+---
+description: 开发工作流程和常用命令指南
+---
+
+# 开发工作流程指南
+
+## 项目初始化
+
+1. **安装依赖**
+   ```bash
+   npm install
+   ```
+
+2. **配置后端服务地址**
+   - 修改 [config.js](mdc:config.js) 中的 `baseUrl`
+   - 默认：`http://localhost:8080`
+   - 生产环境：`https://vue.ruoyi.vip/prod-api`
+
+## 开发命令
+
+### 启动开发服务器
+```bash
+# H5端开发 (推荐用于快速开发)
+npm run dev:h5
+
+# 微信小程序开发
+npm run dev:mp-weixin
+
+# APP端开发
+npm run dev:app
+```
+
+### 构建生产版本
+```bash
+# 构建H5版本
+npm run build:h5
+
+# 构建微信小程序
+npm run build:mp-weixin
+
+# 构建APP
+npm run build:app
+```
+
+## 开发环境配置
+
+### 后端服务要求
+
+项目需要配合RuoYi后端服务：
+- RuoYi-Vue: https://gitee.com/y_project/RuoYi-Vue
+- RuoYi-Cloud: https://github.com/yangzongzhuan/RuoYi-Cloud
+
+### 开发工具
+
+1. **HBuilderX** (推荐)
+   - UniApp官方IDE
+   - 内置模拟器和真机调试
+
+2. **VS Code** + UniApp插件
+   - 更好的代码提示和调试体验
+
+3. **微信开发者工具**
+   - 微信小程序开发必备
+
+## 调试技巧
+
+### 网络请求调试
+- 检查 [utils/request.js](mdc:utils/request.js) 中的拦截器
+- 确认 [config.js](mdc:config.js) 中的baseUrl配置
+- 使用浏览器开发者工具查看网络请求
+
+### 页面路由调试
+- 检查 [pages.json](mdc:pages.json) 配置
+- 确认页面路径是否正确
+- 使用uni.navigateTo等API进行跳转
+
+### 状态管理调试
+- 检查 [store/index.js](mdc:store/index.js) 配置
+- 使用Vue DevTools查看状态变化
+
+## 常见问题解决
+
+1. **跨域问题**
+   - H5端需要配置代理或后端CORS
+   - APP端和小程序端无跨域限制
+
+2. **权限问题**
+   - 检查 [permission.js](mdc:permission.js) 路由守卫
+   - 确认 [utils/auth.js](mdc:utils/auth.js) token处理
+
+3. **样式问题**
+   - 使用rpx单位适配
+   - 检查 [uni.scss](mdc:uni.scss) 全局变量
+   - 参考ColorUI样式规范

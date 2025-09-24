@@ -1,0 +1,60 @@
+---
+globs: *.vue
+description: Vue组件开发规范和最佳实践
+---
+
+# Vue组件开发规范
+
+## Vue3 Composition API 规范
+
+### 基本结构
+```vue
+<template>
+  <!-- 模板内容 -->
+</template>
+
+<script setup>
+import { ref, reactive, computed, onMounted } from 'vue'
+
+// 组件逻辑
+</script>
+
+<style lang="scss" scoped>
+/* 组件样式 */
+</style>
+```
+
+### UniApp特定规范
+
+1. **页面生命周期**
+   - 使用 `onLoad`, `onShow`, `onReady` 等UniApp生命周期
+   - 避免使用Web端特有的生命周期
+
+2. **导航和路由**
+   - 使用 `uni.navigateTo()` 进行页面跳转
+   - 使用 `uni.redirectTo()` 进行页面重定向
+   - 参考 [pages.json](mdc:pages.json) 配置页面路由
+
+3. **网络请求**
+   - 统一使用 [request.js](mdc:utils/request.js) 封装的请求方法
+   - 不要直接使用 `uni.request()`
+
+4. **数据存储**
+   - 使用 [storage.js](mdc:utils/storage.js) 进行本地存储
+   - 敏感数据使用 [auth.js](mdc:utils/auth.js) 进行处理
+
+5. **组件命名**
+   - 页面组件使用PascalCase
+   - 公共组件放在 `components/` 目录
+   - 优先使用uni-ui组件
+
+6. **样式规范**
+   - 使用rpx单位适配不同设备
+   - 引用全局样式变量：[uni.scss](mdc:uni.scss)
+   - 遵循ColorUI设计规范
+
+### 状态管理
+
+- 使用Vuex进行全局状态管理
+- 参考 [store/index.js](mdc:store/index.js) 和模块化配置
+- 用户信息存储在 [store/modules/user.js](mdc:store/modules/user.js)
