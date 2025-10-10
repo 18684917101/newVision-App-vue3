@@ -31,6 +31,25 @@
         try {
           const decoded = decodeURIComponent(this.params.url)
           console.log('解码URL:', decoded)
+          
+          // 如果是本地路径，在微信小程序中需要特殊处理
+          if (decoded.startsWith('/static/')) {
+            //#ifdef MP-WEIXIN
+            // 微信小程序中需要使用相对路径
+            return decoded.substring(1) // 去掉开头的 /
+            //#endif
+            
+            //#ifdef APP-PLUS
+            // App中使用plus API处理本地文件
+            if (typeof plus !== 'undefined') {
+              const baseUrl = plus.io.convertLocalFileSystemURL('_www')
+              return baseUrl + decoded
+            }
+            //#endif
+            
+            return decoded
+          }
+          
           return decoded
         } catch (error) {
           console.error('URL解码失败:', error)
@@ -81,8 +100,24 @@
       },
       handleError(event) {
         console.error('webview加载错误:', event)
+        
+        // 特殊处理重复 web-view 错误
+        if (event.detail && event.detail.errMsg && 
+            event.detail.errMsg.includes('could not insert two web-view')) {
+          uni.showModal({
+            title: '提示',
+            content: '页面正在加载中，请稍后再试',
+            showCancel: false,
+            success: () => {
+              // 返回上一页
+              uni.navigateBack()
+            }
+          })
+          return
+        }
+        
         uni.showToast({
-          title: '文章加载失败',
+          title: '页面加载失败',
           icon: 'none'
         })
       }

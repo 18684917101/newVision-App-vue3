@@ -28,9 +28,11 @@
           <view v-else class="user-details">
             <text class="user-name">{{ nickname || name }}</text>
             <text class="user-phone" v-if="phone">{{ phone }}</text>
+            <!-- 
             <view v-else class="bind-phone-tip" @click="handleBindPhone">
               <text class="bind-text">绑定手机号</text>
             </view>
+            -->
           </view>
         </view>
       </view>
@@ -70,6 +72,7 @@
           <text class="function-title">近视手术</text>
         </view>
         
+        <!-- 
         <view class="function-item" @click="handlePatientManagement">
           <view class="function-icon-wrapper">
             <text class="function-icon">👤</text>
@@ -83,6 +86,7 @@
           </view>
           <text class="function-title">设置</text>
         </view>
+        -->
       </view>
     </view>
   </view>
@@ -91,6 +95,8 @@
 <script setup>
 import { useUserStore } from '@/store'
 import { computed, getCurrentInstance } from "vue"
+import { onShow } from '@dcloudio/uni-app'
+import { requireLogin } from '@/utils/login-guard'
 
 const { proxy } = getCurrentInstance()
 const userStore = useUserStore()
@@ -101,6 +107,51 @@ const avatar = computed(() => userStore.avatar)
 const nickname = computed(() => userStore.nickname)
 const phone = computed(() => userStore.phone)
 const isNewUser = computed(() => userStore.isNewUser)
+
+// 页面显示时检查登录状态
+onShow(async () => {
+  try {
+    const result = await requireLogin('访问个人中心')
+    
+    if (result && result.needLogin && result.code) {
+      // 需要登录并获取到了微信code
+      try {
+        uni.showLoading({
+          title: '登录中...'
+        })
+        
+        const userData = await userStore.wxLogin(result.code)
+        uni.hideLoading()
+        
+        uni.showToast({
+          title: '登录成功',
+          icon: 'success'
+        })
+        
+      } catch (error) {
+        uni.hideLoading()
+        console.error('登录失败:', error)
+        uni.showToast({
+          title: '登录失败，请重试',
+          icon: 'none'
+        })
+        
+        // 登录失败，返回首页
+        setTimeout(() => {
+          uni.switchTab({
+            url: '/pages/index'
+          })
+        }, 1500)
+      }
+    }
+  } catch (error) {
+    // 用户取消登录，返回首页
+    console.log('用户取消登录')
+    uni.switchTab({
+      url: '/pages/index'
+    })
+  }
+})
 
 // 返回按钮点击
 const onBackClick = () => {
@@ -173,13 +224,15 @@ const handleToAvatar = () => {
   proxy.$tab.navigateTo('/pages/mine/avatar/index')
 }
 
-// 绑定手机号
+// 绑定手机号 - 暂时注释
+/*
 const handleBindPhone = () => {
   uni.showToast({
     title: '绑定手机号功能开发中',
     icon: 'none'
   })
 }
+*/
 
 // 挂号记录
 const handleAppointmentRecord = () => {
@@ -212,11 +265,14 @@ const handleDoctorTeam = () => {
 // 近视手术
 const handleMyopiaSurgery = () => {
   uni.navigateTo({
-    url: '/pages/common/webview/index?title=近视手术&url=https://www.example.com/myopia-surgery'
+    url: '/pages/myopia-surgery/index'
   })
 }
 
-// 就诊人管理
+
+
+// 就诊人管理 - 暂时注释
+/*
 const handlePatientManagement = () => {
   if (!name.value) {
     uni.showToast({
@@ -230,8 +286,10 @@ const handlePatientManagement = () => {
     icon: 'none'
   })
 }
+*/
 
-// 设置
+// 设置 - 暂时注释
+/*
 const handleSettings = () => {
   uni.showActionSheet({
     itemList: ['个人信息', '应用设置', '常见问题', '关于我们', '退出登录'],
@@ -267,6 +325,7 @@ const handleSettings = () => {
     }
   })
 }
+*/
 
 // 退出登录
 const handleLogout = () => {

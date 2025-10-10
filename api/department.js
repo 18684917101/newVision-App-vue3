@@ -18,6 +18,17 @@ export function getDoctorsByDept(query) {
   })
 }
 
+// 获取所有医生列表（按角色ID）
+export function getAllDoctors(roleId = 100) {
+  return request({
+    url: '/c/dept/doc-list/all',
+    method: 'get',
+    params: {
+      roleId: roleId
+    }
+  })
+}
+
 // 获取医生详情
 export function getDoctorDetail(doctorId) {
   return request({

@@ -7,25 +7,6 @@ import { toast, showConfirm, tansParams } from '@/utils/common'
 let timeout = 10000
 const baseUrl = config.baseUrl
 
-// 静默登录进度状态管理
-let silentLoginInProgress = false
-
-/**
- * 设置静默登录进度状态
- * @param {boolean} inProgress - 是否正在进行静默登录
- */
-export function setSilentLoginProgress(inProgress) {
-  silentLoginInProgress = inProgress
-  console.log('静默登录状态更新:', inProgress ? '进行中' : '已完成')
-}
-
-/**
- * 获取静默登录进度状态
- * @returns {boolean} 是否正在进行静默登录
- */
-export function getSilentLoginProgress() {
-  return silentLoginInProgress
-}
 
 const request = config => {
   // 是否需要设置 token
@@ -35,25 +16,6 @@ const request = config => {
     config.header['Authorization'] = 'Bearer ' + getToken()
   }
   
-  // 如果正在进行静默登录，且不是登录相关的请求，则延迟执行
-  if (silentLoginInProgress && !config.url.includes('/login') && !config.url.includes('/getInfo')) {
-    console.log('静默登录进行中，延迟请求:', config.url)
-    return new Promise((resolve, reject) => {
-      const checkInterval = setInterval(() => {
-        if (!silentLoginInProgress) {
-          clearInterval(checkInterval)
-          // 重新发起请求
-          request(config).then(resolve).catch(reject)
-        }
-      }, 100)
-      
-      // 超时处理，避免无限等待
-      setTimeout(() => {
-        clearInterval(checkInterval)
-        reject(new Error('静默登录超时'))
-      }, 10000)
-    })
-  }
   // get请求映射params参数
   if (config.params) {
     let url = config.url + '?' + tansParams(config.params)

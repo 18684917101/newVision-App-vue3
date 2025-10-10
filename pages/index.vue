@@ -3,10 +3,10 @@
     <!-- 顶部导航栏 -->
     <view class="header">
       <view class="header-content">
-        <view class="login-status" @click="onLoginStatusClick">
+        <!-- <view class="login-status" @click="onLoginStatusClick">
           <text class="status-text" v-if="!userToken">点击登录</text>
           <text class="status-text" v-else>{{ userName || '已登录' }}</text>
-        </view>
+        </view> -->
         <text class="header-title">首页</text>
         <view class="header-right">
           <view class="notification-btn" @click="onNotificationClick">
@@ -102,6 +102,7 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import { useUserStore } from '@/store'
 import { getLatestArticles, recordArticleClick } from '@/api/wechat-articles'
+import { requireLogin } from '@/utils/login-guard'
 
 // 响应式数据
 const activeTab = ref(0)
@@ -115,31 +116,32 @@ const userName = computed(() => userStore.nickname || userStore.name)
 // 轮播图数据
 const bannerList = reactive([
   {
-    image: '/static/images/banner/banner01.jpg',
+    image: 'http://119.29.84.237:38080/image/banner1.png',
     title: '医院服务',
     link: ''
   },
   {
-    image: '/static/images/banner/banner02.jpg',
+    image: 'http://119.29.84.237:38080/image/banner2.png',
     title: '专业团队', 
     link: ''
   },
-  {
-    image: '/static/images/banner/banner03.jpg',
-    title: '先进设备',
-    link: ''
-  },
-  {
-    image: '/static/images/banner/banner04.jpg',
-    title: '健康生活',
-    link: ''
-  },
-  {
-    image: '/static/images/banner/banner05.jpg',
-    title: '医疗服务',
-    link: ''
-  }
+  // {
+  //   image: 'http://119.29.84.237:38080/image/banner3.png',
+  //   title: '先进设备',
+  //   link: ''
+  // },
+  // {
+  //   image: 'http://119.29.84.237:38080/image/banner4.png',
+  //   title: '健康生活',
+  //   link: ''
+  // },
+  // {
+  //   image: 'http://119.29.84.237:38080/image/banner5.png',
+  //   title: '医疗服务',
+  //   link: ''
+  // }
 ])
+
 
 // 导航选项卡数据
 const tabList = reactive([
@@ -242,13 +244,12 @@ const onTabClick = (index) => {
   
   switch(tab.value) {
     case 'appointment':
-      uni.navigateTo({
-        url: '/pages/appointment/index'
-      })
+      // 挂号需要登录
+      checkLoginAndNavigate('挂号', '/pages/appointment/index')
       break
     case 'doctors':
       uni.navigateTo({
-        url: '/pages/doctors/index'
+        url: '/pages/doctor-list/index?showAll=true'
       })
       break
     case 'route':
@@ -771,6 +772,14 @@ const onArticleClick = async (article) => {
 const onBannerClick = (banner, index) => {
   console.log('点击banner:', banner.title, 'index:', index)
   
+  // 检查是否是专业团队
+  if (banner.title === '专业团队') {
+    uni.navigateTo({
+      url: '/pages/expert-team/index'
+    })
+    return
+  }
+  
   if (banner.link) {
     // 如果有链接，执行跳转
     console.log('跳转到:', banner.link)
@@ -913,6 +922,54 @@ const wxLogin = () => {
       })
     }
   })
+}
+
+// 检查登录状态并导航
+const checkLoginAndNavigate = async (action, targetUrl) => {
+  try {
+    const result = await requireLogin(action, targetUrl)
+    
+    if (result === true) {
+      // 已登录，直接跳转
+      uni.navigateTo({
+        url: targetUrl
+      })
+    } else if (result && result.needLogin && result.code) {
+      // 需要登录并获取到了微信code
+      try {
+        uni.showLoading({
+          title: '登录中...'
+        })
+        
+        const userData = await userStore.wxLogin(result.code)
+        uni.hideLoading()
+        
+        uni.showToast({
+          title: '登录成功',
+          icon: 'success',
+          duration: 1500
+        })
+        
+        // 延迟跳转到目标页面
+        setTimeout(() => {
+          uni.navigateTo({
+            url: targetUrl
+          })
+        }, 1500)
+        
+      } catch (error) {
+        uni.hideLoading()
+        console.error('登录失败:', error)
+        uni.showToast({
+          title: '登录失败，请重试',
+          icon: 'none'
+        })
+      }
+    }
+  } catch (error) {
+    // 用户取消登录或其他错误
+    console.log('用户取消登录或登录失败')
+  }
 }
 </script>
 

@@ -45,15 +45,70 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import { getDeptList } from '@/api/department'
+import { requireLogin } from '@/utils/login-guard'
+import { useUserStore } from '@/store'
 
 // 响应式数据
 const loading = ref(true)
 const departmentList = reactive([])
+const userStore = useUserStore()
 
-// 页面加载时获取科室列表
+// 页面显示时检查登录状态
+onShow(async () => {
+  try {
+    const result = await requireLogin('预约挂号')
+    
+    if (result === true) {
+      // 已登录，加载科室列表
+      loadDepartments()
+    } else if (result && result.needLogin && result.code) {
+      // 需要登录并获取到了微信code
+      try {
+        uni.showLoading({
+          title: '登录中...'
+        })
+        
+        const userData = await userStore.wxLogin(result.code)
+        uni.hideLoading()
+        
+        uni.showToast({
+          title: '登录成功',
+          icon: 'success'
+        })
+        
+        // 登录成功，加载科室列表
+        loadDepartments()
+        
+      } catch (error) {
+        uni.hideLoading()
+        console.error('登录失败:', error)
+        uni.showToast({
+          title: '登录失败，请重试',
+          icon: 'none'
+        })
+        
+        // 登录失败，返回首页
+        setTimeout(() => {
+          uni.switchTab({
+            url: '/pages/index'
+          })
+        }, 1500)
+      }
+    }
+  } catch (error) {
+    // 用户取消登录，返回首页
+    console.log('用户取消登录')
+    uni.switchTab({
+      url: '/pages/index'
+    })
+  }
+})
+
+// 页面加载时不自动获取科室列表，等待登录验证
 onMounted(() => {
-  loadDepartments()
+  // 移除自动加载，改为在登录验证后加载
 })
 
 // 获取科室列表

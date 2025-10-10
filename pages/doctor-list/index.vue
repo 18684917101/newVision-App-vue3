@@ -30,6 +30,7 @@
                 </view>
               </view>
               <text class="doctor-title">{{ doctor.title }}</text>
+              <text class="doctor-dept" v-if="showAll && doctor.deptName">{{ doctor.deptName }}</text>
               <text class="doctor-specialty" v-if="doctor.specialty">擅长：{{ doctor.specialty }}</text>
               <view class="doctor-stats" v-if="doctor.experience || doctor.rating">
                 <text class="stat-item" v-if="doctor.experience">从业{{ doctor.experience }}年</text>
@@ -61,13 +62,14 @@
 
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-import { getDoctorsByDept } from '@/api/department'
+import { getDoctorsByDept, getAllDoctors } from '@/api/department'
 
 // 响应式数据
 const loading = ref(true)
 const doctorList = reactive([])
 const deptId = ref('')
 const deptName = ref('')
+const showAll = ref(false) // 是否显示所有医生
 
 // 页面加载时获取参数
 onMounted(() => {
@@ -77,8 +79,14 @@ onMounted(() => {
   
   deptId.value = options.deptId || ''
   deptName.value = decodeURIComponent(options.deptName || '')
+  showAll.value = options.showAll === 'true' // 新增：是否显示所有医生
   
-  if (deptId.value) {
+  if (showAll.value) {
+    // 显示所有医生
+    deptName.value = '医生团队'
+    loadAllDoctors()
+  } else if (deptId.value) {
+    // 按科室显示医生
     loadDoctors()
   } else {
     // 如果没有科室ID，显示模拟数据
@@ -134,6 +142,51 @@ const loadDoctors = async () => {
   }
 }
 
+// 获取所有医生列表（真实API）
+const loadAllDoctors = async () => {
+  try {
+    loading.value = true
+    const response = await getAllDoctors(100) // roleId = 100
+    
+    if (response.code === 200) {
+      // 处理API返回的数据格式，将用户数据转换为医生数据
+      const doctors = response.rows.map(user => ({
+        id: user.userId,
+        name: user.nickName || user.userName,
+        title: getRandomTitle(), // 随机分配职称
+        specialty: getGeneralSpecialty(), // 通用专长
+        experience: getRandomExperience(), // 随机分配经验年限
+        rating: getRandomRating(), // 随机分配评分
+        status: user.status === '0' ? 'available' : 'busy', // 根据用户状态判断可约状态
+        avatar: user.avatar || '/static/images/profile.jpg',
+        phone: user.phonenumber,
+        email: user.email,
+        dept: user.dept,
+        deptName: user.dept?.deptName || '未知科室'
+      }))
+      
+      doctorList.splice(0, doctorList.length, ...doctors)
+    } else {
+      uni.showToast({
+        title: response.msg || '获取医生信息失败',
+        icon: 'none'
+      })
+      // 如果API失败，加载模拟数据
+      loadMockDoctors()
+    }
+  } catch (error) {
+    console.error('获取所有医生列表失败:', error)
+    uni.showToast({
+      title: '网络错误，使用模拟数据',
+      icon: 'none'
+    })
+    // 网络错误时加载模拟数据
+    loadMockDoctors()
+  } finally {
+    loading.value = false
+  }
+}
+
 // 随机分配职称
 const getRandomTitle = () => {
   const titles = ['主任医师', '副主任医师', '主治医师', '住院医师']
@@ -165,6 +218,25 @@ const getSpecialtyByDept = (deptName) => {
   return '各类常见疾病诊疗'
 }
 
+// 获取通用专长（用于所有医生列表）
+const getGeneralSpecialty = () => {
+  const specialties = [
+    '内科常见疾病诊疗',
+    '外科手术及护理',
+    '妇产科疾病治疗', 
+    '儿科疾病诊断',
+    '眼科疾病治疗',
+    '口腔疾病处理',
+    '皮肤病诊疗',
+    '耳鼻喉科疾病',
+    '骨科疾病治疗',
+    '心血管疾病诊疗',
+    '呼吸系统疾病',
+    '消化系统疾病'
+  ]
+  return specialties[Math.floor(Math.random() * specialties.length)]
+}
+
 // 随机分配经验年限
 const getRandomExperience = () => {
   return Math.floor(Math.random() * 20) + 5 // 5-25年
@@ -186,7 +258,8 @@ const loadMockDoctors = () => {
       experience: 25,
       rating: 98,
       status: 'available',
-      avatar: '/static/images/profile.jpg'
+      avatar: '/static/images/profile.jpg',
+      deptName: showAll.value ? '眼科' : undefined
     },
     {
       id: 2,
@@ -196,7 +269,8 @@ const loadMockDoctors = () => {
       experience: 18,
       rating: 96,
       status: 'busy',
-      avatar: '/static/images/profile.jpg'
+      avatar: '/static/images/profile.jpg',
+      deptName: showAll.value ? '眼科' : undefined
     },
     {
       id: 3,
@@ -206,11 +280,37 @@ const loadMockDoctors = () => {
       experience: 12,
       rating: 94,
       status: 'available',
-      avatar: '/static/images/profile.jpg'
+      avatar: '/static/images/profile.jpg',
+      deptName: showAll.value ? '内科' : undefined
+    },
+    {
+      id: 4,
+      name: '陈小丽',
+      title: '主治医师',
+      specialty: '妇科常见疾病诊疗',
+      experience: 8,
+      rating: 95,
+      status: 'available',
+      avatar: '/static/images/profile.jpg',
+      deptName: showAll.value ? '妇产科' : undefined
+    },
+    {
+      id: 5,
+      name: '刘志强',
+      title: '副主任医师',
+      specialty: '外科手术及护理',
+      experience: 15,
+      rating: 97,
+      status: 'available',
+      avatar: '/static/images/profile.jpg',
+      deptName: showAll.value ? '外科' : undefined
     }
   ]
   
-  doctorList.splice(0, doctorList.length, ...mockDoctors)
+  // 如果是显示所有医生，只显示有科室的数据
+  const displayDoctors = showAll.value ? mockDoctors : mockDoctors.slice(0, 3)
+  
+  doctorList.splice(0, doctorList.length, ...displayDoctors)
   loading.value = false
 }
 
@@ -371,6 +471,15 @@ const onDoctorClick = (doctor) => {
 .doctor-title {
   font-size: 24rpx;
   color: #138aec;
+}
+
+.doctor-dept {
+  font-size: 22rpx;
+  color: #f59e0b;
+  background-color: #fef3c7;
+  padding: 4rpx 8rpx;
+  border-radius: 8rpx;
+  align-self: flex-start;
 }
 
 .doctor-specialty {

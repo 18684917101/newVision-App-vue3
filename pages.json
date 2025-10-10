@@ -100,6 +100,18 @@
     "style": {
       "navigationBarTitleText": "医生团队"
     }
+  }, {
+    "path": "pages/myopia-surgery/index",
+    "style": {
+      "navigationBarTitleText": "近视手术",
+      "navigationStyle": "custom"
+    }
+  }, {
+    "path": "pages/expert-team/index",
+    "style": {
+      "navigationBarTitleText": "专家团队",
+      "navigationStyle": "custom"
+    }
   }],
   "tabBar": {
     "color": "#6b7280",
@@ -112,7 +124,7 @@
         "selectedIconPath": "static/images/tabbar/home_.png",
         "text": "首页"
       }, {
-        "pagePath": "pages/work/index",
+        "pagePath": "pages/appointment/index",
         "iconPath": "static/images/tabbar/work.png",
         "selectedIconPath": "static/images/tabbar/work_.png",
         "text": "挂号"
