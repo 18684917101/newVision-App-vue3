@@ -249,7 +249,7 @@ const onTabClick = (index) => {
       break
     case 'doctors':
       uni.navigateTo({
-        url: '/pages/doctor-list/index?showAll=true'
+        url: '/pages/expert-team/index'
       })
       break
     case 'route':
