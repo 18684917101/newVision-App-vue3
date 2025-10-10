@@ -258,7 +258,7 @@ const handleHospitalInfo = () => {
 // 专家团队
 const handleDoctorTeam = () => {
   uni.navigateTo({
-    url: '/pages/doctors/index'
+    url: '/pages/expert-team/index'
   })
 }
 
