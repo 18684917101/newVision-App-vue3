@@ -143,7 +143,9 @@ const loadDepartments = async () => {
 
 // 返回按钮点击
 const onBackClick = () => {
-  uni.navigateBack()
+  uni.switchTab({
+    url: '/pages/index'
+  })
 }
 
 // 科室点击事件

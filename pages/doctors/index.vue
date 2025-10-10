@@ -44,9 +44,6 @@
           <view class="doctor-info">
             <view class="doctor-header">
               <text class="doctor-name">{{ doctor.name }}</text>
-              <view class="doctor-status" :class="doctor.status === 'available' ? 'status-available' : 'status-busy'">
-                <text class="status-text">{{ doctor.status === 'available' ? '可预约' : '已约满' }}</text>
-              </view>
             </view>
             <text class="doctor-title">{{ doctor.title }} | {{ doctor.department }}</text>
             <text class="doctor-specialty">擅长：{{ doctor.specialty }}</text>
@@ -261,7 +258,6 @@ const onDoctorDetail = (doctor) => {
 .doctor-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
 }
 
 .doctor-name {
@@ -270,27 +266,6 @@ const onDoctorDetail = (doctor) => {
   color: #1a1a1a;
 }
 
-.doctor-status {
-  padding: 8rpx 16rpx;
-  border-radius: 12rpx;
-}
-
-.status-available {
-  background-color: #dcfce7;
-}
-
-.status-busy {
-  background-color: #fef2f2;
-}
-
-.status-text {
-  font-size: 20rpx;
-  color: #16a34a;
-}
-
-.status-busy .status-text {
-  color: #dc2626;
-}
 
 .doctor-title {
   font-size: 24rpx;

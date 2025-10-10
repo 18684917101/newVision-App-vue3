@@ -244,8 +244,9 @@ const onTabClick = (index) => {
   
   switch(tab.value) {
     case 'appointment':
-      // 挂号需要登录
-      checkLoginAndNavigate('挂号', '/pages/appointment/index')
+      uni.switchTab({
+        url: '/pages/appointment/index'
+      })
       break
     case 'doctors':
       uni.navigateTo({
