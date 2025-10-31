@@ -1,7 +1,7 @@
 // 应用全局配置
 export default {
-  baseUrl: 'http://119.29.84.237:58080',
-  // baseUrl: 'http://localhost:8080',
+  baseUrl: 'https://xcx.shdqyk.com/newEyes',
+  // baseUrl: 'http://localhost:58080',
   // 应用信息
   appInfo: {
     // 应用名称

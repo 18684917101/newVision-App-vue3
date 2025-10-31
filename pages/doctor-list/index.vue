@@ -21,7 +21,6 @@
             class="doctor-item"
             @click="onDoctorClick(doctor)"
           >
-            <image class="doctor-avatar" :src="doctor.avatar || '/static/images/profile.jpg'" mode="aspectFill"></image>
             <view class="doctor-info">
               <view class="doctor-header">
                 <text class="doctor-name">{{ doctor.name }}</text>
@@ -32,8 +31,7 @@
               <text class="doctor-title">{{ doctor.title }}</text>
               <text class="doctor-dept" v-if="showAll && doctor.deptName">{{ doctor.deptName }}</text>
               <text class="doctor-specialty" v-if="doctor.specialty">擅长：{{ doctor.specialty }}</text>
-              <view class="doctor-stats" v-if="doctor.experience || doctor.rating">
-                <text class="stat-item" v-if="doctor.experience">从业{{ doctor.experience }}年</text>
+              <view class="doctor-stats" v-if="doctor.rating">
                 <text class="stat-item" v-if="doctor.rating">好评率{{ doctor.rating }}%</text>
               </view>
             </view>
@@ -109,8 +107,8 @@ const loadDoctors = async () => {
       const doctors = response.rows.map(user => ({
         id: user.userId,
         name: user.nickName || user.userName,
-        title: getRandomTitle(), // 随机分配职称
-        specialty: getSpecialtyByDept(deptName.value), // 根据科室分配专长
+        title: user.postNames || getRandomTitle(), // 从postNames字段获取职称
+        specialty: user.remark || getSpecialtyByDept(deptName.value), // 从remark字段获取专长
         experience: getRandomExperience(), // 随机分配经验年限
         rating: getRandomRating(), // 随机分配评分
         status: user.status === '0' ? 'available' : 'busy', // 根据用户状态判断可约状态
@@ -153,8 +151,8 @@ const loadAllDoctors = async () => {
       const doctors = response.rows.map(user => ({
         id: user.userId,
         name: user.nickName || user.userName,
-        title: getRandomTitle(), // 随机分配职称
-        specialty: getGeneralSpecialty(), // 通用专长
+        title: user.postNames || getRandomTitle(), // 从postNames字段获取职称
+        specialty: user.remark || getGeneralSpecialty(), // 从remark字段获取专长
         experience: getRandomExperience(), // 随机分配经验年限
         rating: getRandomRating(), // 随机分配评分
         status: user.status === '0' ? 'available' : 'busy', // 根据用户状态判断可约状态
@@ -407,7 +405,6 @@ const onDoctorClick = (doctor) => {
 
 .doctor-item {
   display: flex;
-  gap: 24rpx;
   background-color: #ffffff;
   padding: 32rpx;
   border-radius: 16rpx;
@@ -420,12 +417,6 @@ const onDoctorClick = (doctor) => {
   background-color: rgba(19, 138, 236, 0.05);
 }
 
-.doctor-avatar {
-  width: 120rpx;
-  height: 120rpx;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
 
 .doctor-info {
   flex: 1;

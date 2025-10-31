@@ -85,7 +85,6 @@
             <text class="article-desc">{{ article.description }}</text>
             <text v-if="article.publishTime" class="article-time">{{ formatPublishTime(article.publishTime) }}</text>
           </view>
-          <image class="article-image" :src="article.image" mode="aspectFill" @error="onImageError"></image>
         </view>
       </view>
       
@@ -115,28 +114,28 @@ const userName = computed(() => userStore.nickname || userStore.name)
 
 // 轮播图数据
 const bannerList = reactive([
+  // {
+  //   image: 'https://xcx.shdqyk.com/image/banner1.png',
+  //   title: '医院服务',
+  //   link: ''
+  // },
   {
-    image: 'http://119.29.84.237:38080/image/banner1.png',
-    title: '医院服务',
-    link: ''
-  },
-  {
-    image: 'http://119.29.84.237:38080/image/banner2.png',
+    image: 'https://xcx.shdqyk.com/image/banner2.png',
     title: '专业团队', 
     link: ''
   },
   // {
-  //   image: 'http://119.29.84.237:38080/image/banner3.png',
+  //   image: 'https://xcx.shdqyk.com/image/banner3.png',
   //   title: '先进设备',
   //   link: ''
   // },
   // {
-  //   image: 'http://119.29.84.237:38080/image/banner4.png',
+  //   image: 'https://xcx.shdqyk.com/image/banner4.png',
   //   title: '健康生活',
   //   link: ''
   // },
   // {
-  //   image: 'http://119.29.84.237:38080/image/banner5.png',
+  //   image: 'https://xcx.shdqyk.com/image/banner5.png',
   //   title: '医疗服务',
   //   link: ''
   // }
@@ -278,7 +277,6 @@ const loadWechatArticles = async () => {
         category: getCategoryText(article.category), // 转换分类显示
         title: article.title,
         description: article.summary || '点击查看详情',
-        image: article.coverImage || '/static/images/profile.jpg',
         url: article.originalUrl, // 使用 originalUrl 字段
         publishTime: article.createTime, // 使用 createTime 作为发布时间
         readCount: article.readCount || 0,
@@ -322,7 +320,6 @@ const loadMockArticles = () => {
       category: '医院公告',
       title: '上海新视界东区眼科医院十周年庆典暨学术交流会',
       description: '医院举行十周年庆典暨第二届眼科创新技术学术交流会，展现十年发展成果与责任担当',
-      image: '/static/images/profile.jpg',
       url: 'https://mp.weixin.qq.com/s/-DAQDLr01H2329wn_d-2Og',
       publishTime: new Date().toISOString(),
       readCount: 1200,
@@ -334,7 +331,6 @@ const loadMockArticles = () => {
       category: '健康科普', 
       title: '儿童青少年近视防控指引',
       description: '全国综合防控儿童青少年近视宣讲团发布权威防控指南',
-      image: '/static/images/profile.jpg',
       url: 'https://mp.weixin.qq.com/s/c_GYNw5Xk6EL1GPNIlaedA',
       publishTime: new Date().toISOString(),
       readCount: 800,
@@ -346,7 +342,6 @@ const loadMockArticles = () => {
       category: '健康科普',
       title: '白内障治疗的科学方法',
       description: '详细介绍白内障的症状、治疗方法和预防措施，手术是唯一有效治愈方法',
-      image: '/static/images/profile.jpg',
       url: 'https://mp.weixin.qq.com/s/vPh1sa_1Rp_KOmPzeQ4lZw',
       publishTime: new Date().toISOString(),
       readCount: 950,
@@ -393,12 +388,6 @@ const formatPublishTime = (publishTime) => {
   }
 }
 
-// 图片加载错误处理
-const onImageError = (e) => {
-  console.warn('文章图片加载失败，使用默认图片')
-  // 可以设置默认图片
-  e.target.src = '/static/images/profile.jpg'
-}
 
 // 测试坐标和平台兼容性
 const testCoordinatesAndPlatform = () => {
@@ -1169,9 +1158,6 @@ const checkLoginAndNavigate = async (action, targetUrl) => {
 }
 
 .article-item {
-  display: flex;
-  align-items: center;
-  gap: 32rpx;
   padding: 24rpx;
   background-color: #ffffff;
   border-radius: 16rpx;
@@ -1179,7 +1165,6 @@ const checkLoginAndNavigate = async (action, targetUrl) => {
 }
 
 .article-content {
-  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 12rpx;
@@ -1221,11 +1206,5 @@ const checkLoginAndNavigate = async (action, targetUrl) => {
   margin-top: 4rpx;
 }
 
-.article-image {
-  width: 120rpx;
-  height: 120rpx;
-  border-radius: 8rpx;
-  flex-shrink: 0;
-}
 
 </style>

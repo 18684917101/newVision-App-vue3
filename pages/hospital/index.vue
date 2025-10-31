@@ -6,7 +6,7 @@
         <view class="back-btn" @click="onBackClick">
           <text class="back-icon">←</text>
         </view>
-        <text class="header-title">专家团队</text>
+        <text class="header-title">医院介绍</text>
         <view style="width: 64rpx;"></view>
       </view>
     </view>
@@ -32,7 +32,7 @@ import { ref } from 'vue'
 // 图片数据
 const images = ref([
   {
-    src: 'https://xcx.shdqyk.com/image/医生.jpg',
+    src: 'https://xcx.shdqyk.com/image/hospital.jpg',
     alt: '专家团队'
   }
 ])

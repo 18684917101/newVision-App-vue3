@@ -112,6 +112,12 @@
       "navigationBarTitleText": "专家团队",
       "navigationStyle": "custom"
     }
+  }, {
+    "path": "pages/hospital/index",
+    "style": {
+      "navigationBarTitleText": "医院介绍",
+      "navigationStyle": "custom"
+    }
   }],
   "tabBar": {
     "color": "#6b7280",

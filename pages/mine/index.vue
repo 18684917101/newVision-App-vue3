@@ -251,7 +251,7 @@ const handleAppointmentRecord = () => {
 // 医院介绍
 const handleHospitalInfo = () => {
   uni.navigateTo({
-    url: '/pages/common/webview/index?title=医院介绍&url=https://www.example.com/hospital-info'
+    url: '/pages/hospital/index'
   })
 }
 

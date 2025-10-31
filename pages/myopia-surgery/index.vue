@@ -32,17 +32,48 @@ import { ref } from 'vue'
 // 图片数据
 const images = ref([
   {
-    src: 'http://119.29.84.237:38080/image/qfm_01.png',
+    src: 'https://xcx.shdqyk.com/image/qfm_01.png',
     alt: 'qfm_01'
   },
   {
-    src: 'http://119.29.84.237:38080/image/qfm_02.png',
+    src: 'https://xcx.shdqyk.com/image/qfm_02.png',
     alt: 'qfm_02'
   },
   {
-    src: 'http://119.29.84.237:38080/image/qfm_03.png',
+    src: 'https://xcx.shdqyk.com/image/qfm_03.png',
     alt: 'qfm_03'
+  },
+  {
+    src: 'https://xcx.shdqyk.com/image/qfm_04.png',
+    alt: 'qfm_04'
   }
+  ,
+  {
+    src: 'https://xcx.shdqyk.com/image/qfm_05.png',
+    alt: 'qfm_05'
+  }
+  ,
+  {
+    src: 'https://xcx.shdqyk.com/image/qfm_06.png',
+    alt: 'qfm_06'
+  }
+  ,
+  {
+    src: 'https://xcx.shdqyk.com/image/qfm_07.png',
+    alt: 'qfm_07'
+  }
+  ,
+  {
+    src: 'https://xcx.shdqyk.com/image/qfm_08.png',
+    alt: 'qfm_08'
+  }
+  ,
+  {
+    src: 'https://xcx.shdqyk.com/image/qfm_09.png',
+    alt: 'qfm_09'
+  }
+
+
 ])
 
 // 返回按钮点击

@@ -79,6 +79,14 @@
           <input class="form-input" v-model="patientInfo.phone" placeholder="请输入手机号码" />
         </view>
         <view class="form-item">
+          <text class="form-label">左眼度数</text>
+          <input class="form-input" v-model="patientInfo.leftEyeDegree" placeholder="请输入左眼度数（选填）" type="number" />
+        </view>
+        <view class="form-item">
+          <text class="form-label">右眼度数</text>
+          <input class="form-input" v-model="patientInfo.rightEyeDegree" placeholder="请输入右眼度数（选填）" type="number" />
+        </view>
+        <view class="form-item">
           <text class="form-label">症状描述</text>
           <textarea class="form-textarea" v-model="patientInfo.symptoms" placeholder="请简单描述症状（选填）" />
         </view>
@@ -117,7 +125,6 @@
 
 <script setup>
 import { ref, reactive, computed, onMounted, watch } from 'vue'
-import { submitAppointment } from '@/api/department'
 import { getSlotsByDoctorAndDate, createAppointment } from '@/api/appointment'
 import { useUserStore } from '@/store'
 
@@ -143,6 +150,8 @@ const lastLoadKey = ref('') // 上次加载的缓存键
 const patientInfo = reactive({
   name: '',
   phone: '',
+  leftEyeDegree: '',
+  rightEyeDegree: '',
   symptoms: ''
 })
 
@@ -563,13 +572,32 @@ const onSubmitAppointment = async () => {
       title: '提交中...'
     })
     
+    // 构建度数信息字符串
+    let remarkText = ''
+    if (patientInfo.leftEyeDegree || patientInfo.rightEyeDegree) {
+      const leftDegree = patientInfo.leftEyeDegree || '未填写'
+      const rightDegree = patientInfo.rightEyeDegree || '未填写'
+      remarkText = `左眼:${leftDegree} 右眼:${rightDegree}`
+      
+      // 如果有症状描述，添加空格分隔
+      if (patientInfo.symptoms) {
+        remarkText += ` ${patientInfo.symptoms}`
+      }
+    } else {
+      // 如果没有度数信息，直接使用症状描述
+      remarkText = patientInfo.symptoms || "无特殊要求"
+    }
+    
     const appointmentData = {
       scheduleId: selectedSlot.value.id,              // 号源ID（使用新的字段名）
       customerAccountId: userStore.id || 1,           // 就诊人ID（从用户store获取，没有则使用默认值）
       customerAccountName: patientInfo.name,         // 就诊人姓名
       status: "BOOKED",                               // 预约状态
       paymentStatus: "UNPAID",                        // 支付状态
-      remark: patientInfo.symptoms || "无特殊要求"     // 备注（症状描述）
+      remark: remarkText,                             // 备注（度数信息 + 症状描述）
+      appointmentStartTime: selectedSlot.value.startTime, // 预约开始时间
+      appointmentEndTime: selectedSlot.value.endTime,     // 预约结束时间
+      phoneNum: patientInfo.phone                     // 手机号
     }
     
     console.log('提交预约数据:', appointmentData)
